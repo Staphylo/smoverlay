@@ -1,0 +1,10 @@
+# basic
+__pycache__/
+*.pyc
+*.egg-info/
+/build/
+/dist/
+
+# custom
+/venv/
+*.vim
