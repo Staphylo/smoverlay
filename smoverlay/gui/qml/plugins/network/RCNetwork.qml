@@ -29,6 +29,9 @@ Rectangle {
                 anchors.right: parent.right
                 height: 32
 
+                //Behavior on rxspeed { SmoothedAnimation { velocity: 200 } }
+                //Behavior on txspeed { SmoothedAnimation { velocity: 200 } }
+
                 function humanSize(bytes) {
                     if ((bytes >> 30) & 0x3FF)
                         bytes = (bytes >>> 30) + '.' + (bytes & (3*0x3FF)) + 'GB' ;
@@ -51,11 +54,12 @@ Rectangle {
                     anchors.left: parent.left
                     anchors.right: ip_text.left
                     anchors.bottom: parent.bottom
-                    anchors.margins: {
-                        top: 5
-                        left: 5
-                        right: 5
-                    }
+                    anchors.margins: 5
+                    //anchors.margins: {
+                    //    top: 5
+                    //    left: 5
+                    //    right: 5
+                    //}
 
                     verticalAlignment: Text.AlignVCenter
                     color: "white"
@@ -66,46 +70,39 @@ Rectangle {
                 Text {
                     id: ip_text
 
-                    anchors.top: parent.top
+                    //anchors.top: parent.top
                     anchors.left: name_text.right
                     anchors.right: speed_text.left
-                    anchors.bottom: parent.bottom
+                    //anchors.bottom: parent.bottom
+                    anchors.verticalCenter: name_text.verticalCenter
 
-                    anchors.margins: {
-                        top: 5
-                        left: 5
-                        right: 5
-                    }
+                    anchors.margins: 5
+                    //anchors.margins: {
+                    //    top: 5
+                    //    left: 5
+                    //    right: 5
+                    //}
                     verticalAlignment: Text.AlignVCenter
 
-                    text: "0.0.0.0"
+                    text: "" //0.0.0.0"
                     color: "white"
                     font.pointSize: 8.
                 }
 
-                Item {
+                Column {
                     id: speed_text
 
                     anchors.top: parent.top
-                    anchors.left: ip_text.right
-                    anchors.right: parent.right
                     anchors.bottom: parent.bottom
+                    anchors.right: parent.right
+
+                    width: 75
 
                     Text {
                         id: rx_text
 
-                        anchors.top: parent.top
-                        anchors.left: parent.right
-                        anchors.right: parent.right
-                        anchors.bottom: tx_text.bottom
-
-                        anchors.margins: {
-                            top: 5
-                            left: 5
-                            right: 5
-                        }
                         verticalAlignment: Text.AlignVCenter
-                        horizontalAlignment: Text.AlignRight
+                        //horizontalAlignment: Text.AlignRight
 
                         text: "rx: " + humanSize(modelData.rxspeed) + "/s"
                         color: "white"
@@ -115,18 +112,8 @@ Rectangle {
                     Text {
                         id: tx_text
 
-                        anchors.top: parent.bottom
-                        anchors.left: ip_text.right
-                        anchors.right: parent.right
-                        anchors.bottom: parent.bottom
-
-                        anchors.margins: {
-                            top: 5
-                            left: 5
-                            right: 5
-                        }
                         verticalAlignment: Text.AlignVCenter
-                        horizontalAlignment: Text.AlignRight
+                        //horizontalAlignment: Text.AlignRight
 
                         text: "tx: " + humanSize(modelData.txspeed) + "/s"
                         color: "white"

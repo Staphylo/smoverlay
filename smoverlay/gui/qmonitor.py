@@ -4,6 +4,7 @@ import psutil
 import time
 
 from PyQt5.QtCore import *
+from smoverlay.gui.qmlobject import QmlObject, qmlProperty
 
 class QMonitorManager(QObject):
     def __init__(self):
@@ -19,48 +20,13 @@ class QMonitorManager(QObject):
     def getMonitor(self, monitor):
         return self.monitors.get(monitor, None)
 
-class QMixinProperty(object):
-    def __init__(self, value):
-        self.value = value
-
-    def __set__(self, obj, value):
-        self.value = value
-
-    def __get__(self, obj, objtype=None):
-        return self.value
-
-    def __changed__(self):
-        print("changed")
-
-class QMonitor(QObject):
-    def prop(self, *args, signal=None, notify=None, **kwargs):
-        if notify:
-            if not signal:
-                signal = pyqtSignal()
-            #signal.connect(notify)
-            return pyqtProperty(*args, notify=signal, **kwargs)
-        return pyqtProperty(*args, **kwargs)
-
-    def encaps(self, name, typ, value, fget=True, fset=True, **kwargs):
-        if fset:
-            def fset(self, value):
-                setattr(self, name, value)
-            setattr(self, "set_%s" % name, fset)
-        if fget:
-            def fget(self):
-                return getattr(self, name)
-            setattr(self, "get_%s" % name, fget)
-        p = self.prop(typ, fget=fget, fset=fset, **kwargs)
-        p = value
-        return p
+class QMonitor(QmlObject):
+    monitor_name = qmlProperty('QString')
+    monitor_view = qmlProperty('QString')
+    updateInterval = qmlProperty(int)
 
     def __init__(self, mon, name, view):
         QObject.__init__(self)
-        #self.name = self.encaps('count', 'QString', name, fset=None)
-        #self.monitor = self.encaps('monitor', mon.__class__, mon, fset=None)
-        ##self.view = self.encaps('view', 'QString', view, fset=None)
-        #self.view = self.encaps('view', 'QString', view, fset=None)
-
         self.qtypes_ = [ self.__class__ ]
         self.monitor = mon
         self.monitor_view_ = "plugins/" + name.lower() + "/" + view
@@ -70,20 +36,6 @@ class QMonitor(QObject):
     def types(self):
         return self.qtypes_
 
-    updateIntervalChanged = pyqtSignal()
-    @pyqtProperty(int, notify=updateIntervalChanged)
-    def updateInterval(self):
-        return self.updateInterval_
-
-    @pyqtProperty('QString')
-    def monitor_view(self):
-        return self.monitor_view_
-
-    @pyqtProperty('QString')
-    def monitor_name(self):
-        return self.monitor_name_
-
-    @pyqtSlot()
     def update(self):
         self.monitor._update(time.monotonic())
 

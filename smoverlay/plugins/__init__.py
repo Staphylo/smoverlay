@@ -42,9 +42,8 @@ for plugin in plugins:
                 if hasattr(obj, '__bases__'):
                     for base in obj.__bases__:
                         if base == QMonitor:
-                            print("found QMonitor : %s" % obj)
                             qmonitors[plugin] = obj
                         elif base == Monitor:
-                            print("found Monitor : %s" % obj)
                             monitors[plugin] = obj
         break
+

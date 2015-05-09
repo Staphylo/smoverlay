@@ -4,14 +4,9 @@ import QtQuick.Controls 1.3
 import QtQuick.Controls.Styles 1.3
 
 Item {
-//Rectangle {
-//RCGroup {
-
     property variant monitor
     property variant title: monitor.name
     property alias color : content.color
-
-    property variant mempercent : monitor.memory.used / monitor.memory.total
 
     anchors.fill: parent
 
@@ -24,14 +19,14 @@ Item {
         id: content
         //anchors.fill: parent
 
-        height: 30
+        height: 40
         anchors.top: parent.top 
         anchors.bottom: scope.top
         anchors.left: parent.left
         anchors.right: parent.right
 
         Text {
-            id: memory_text
+            id: battery_text
 
             anchors.top: parent.top
             anchors.left: parent.left
@@ -45,14 +40,14 @@ Item {
             verticalAlignment: Text.AlignVCenter
             color: "white"
 
-            text: "RAM"
+            text: "Battery is " + monitor.status
         }
 
         Text {
             id: usage_text
 
             anchors.top: parent.top
-            anchors.left: memory_text.right
+            anchors.left: battery_text.right
             anchors.right: parent.right
             anchors.margins: {
                 top: 5
@@ -62,22 +57,21 @@ Item {
             verticalAlignment: Text.AlignVCenter
             horizontalAlignment: Text.AlignRight
 
-            text: monitor.memory.percent + "%"
+            text: monitor.percent + "%"
             color: "white"
         }
 
         ProgressBar {
             id: usage_bar
 
-            anchors.top: memory_text.bottom
+            anchors.top: battery_text.bottom
             anchors.bottom: parent.bottom
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.margins: 4
 
-            value: monitor.memory.percent / 100
+            value: monitor.percent / 100
 
-            //background: (usage_bar.value >= 75) ? "orange" : "green"
             style: ProgressBarStyle {
                 background: Rectangle {
                     radius: 2
@@ -85,22 +79,9 @@ Item {
                 }
                 progress: Rectangle {
                     radius: 2
-                    color: (usage_bar.value >= 0.75) ? "orange" : "green"
+                    color: (usage_bar.value < 0.25) ? "orange" : "green"
                 }
             }
-        }
-    }
-    FocusScope {
-        id: scope
-
-        anchors.top: content.bottom
-        anchors.bottom: parent.bottom
-        anchors.left: parent.left
-        anchors.right: parent.right
-
-        TextInput {
-            id: input
-            focus: true
         }
     }
 }

@@ -33,8 +33,6 @@ Item {
                 console.log("monitor: ", modelData)
                 console.log(JSON.stringify(modelData, null, 4))
 
-                //console.log(disklist)
-
                 component = Qt.createComponent(modelData.monitor_view);
                 //component = Qt.createQmlObject(model.viewsrc);
                 if (component.status == Component.Ready)
@@ -50,7 +48,7 @@ Item {
                     sprite = component.createObject(monitor, {
                         "anchors.left": monitor.left,
                         "anchors.right": monitor.right,
-                        "height": 30,
+                        //"height": 50,
                         "title": modelData.monitor_name,
                         "monitor": modelData,
                         "color": "#FF383e4b"

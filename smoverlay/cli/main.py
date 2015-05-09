@@ -34,8 +34,9 @@ def main():
     nm = monitors["network"]()
     #mm = MemoryMonitor()
     mm = monitors["memory"]()
+    bm = monitors["battery"]()
 
-    monitors = [ sm, nm, mm ]
+    monitors = [ sm, nm, mm, bm ]
 
     m = Manager()
     for monitor in monitors:

@@ -12,6 +12,12 @@ from PyQt5.QtQml import QJSValue, qmlRegisterType, QQmlListProperty
 from smoverlay.plugins import qmonitors
 from smoverlay.gui.remotecast import Remotecast
 
+try:
+    import signal
+    signal.signal(signal.SIGINT, signal.SIG_DFL)
+except ImportError:
+    pass
+
 def listScreens(desktop):
     for i in range(desktop.screenCount()):
         rect = desktop.screenGeometry(i)
@@ -67,10 +73,14 @@ def main():
     qnm = qmonitors["network"]()
     #qnm = QNetworkMonitor()
 
+    # :: battery
+    qbm = qmonitors["battery"]()
+
     monitors = {
         "Storage": qsm,
         "Memory": qmm,
-        "Network": qnm
+        "Network": qnm,
+        "Battery": qbm
     }
 
     #types = [

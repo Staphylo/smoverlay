@@ -11,16 +11,21 @@ Rectangle {
     height: cast.overlayHeight;
 
     // comment to show by default
-    //Component.onCompleted: { view.x = -root.width + 1; freeze(); }
+    function freeze() {  console.log("freeze") }
+    function unfreeze() { console.log("unfreeze") }
+    //function freeze() {  console.log("freeze"); root.setUpdatesEnabled = false }
+    //function unfreeze() { console.log("unfreeze"); root.setUpdatesEnabled = true }
+
+    state: "VISIBLE"
     //opacity: 0.
+    //Component.onCompleted: { view.x = -root.width + 1; freeze(); }
+
 
     color: "#FF2d323d"
 
     // completely transparent border
     border.color: "#00FFFFFF"
     border.width: 1
-
-    state: "HIDDEN"
 
     property variant webview;
     property bool autohide: true;
@@ -85,11 +90,6 @@ Rectangle {
         }
     ]
 
-    function freeze() {  console.log("freeze") }
-    function unfreeze() { console.log("unfreeze") }
-    //function freeze() {  console.log("freeze"); root.setUpdatesUnabled = false }
-    //function unfreeze() { console.log("unfreeze"); root.setUpdatesUnabled = true }
-
     transitions: [
         Transition {
             from: "VISIBLE"
@@ -101,8 +101,8 @@ Rectangle {
                     NumberAnimation { target: view; property: "opacity"; to: 0.0; duration: root.width - view.x }
                 }
                 //NumberAnimation { properties: "x, opacity"; easing.type: Eeasing.InOutQuad }
-                PropertyAnimation { target: root; property: "state"; to: "HIDDEN" } 
                 ScriptAction { script: freeze() }
+                PropertyAnimation { target: root; property: "state"; to: "HIDDEN" } 
             }
         },
         Transition {
@@ -113,8 +113,8 @@ Rectangle {
                     NumberAnimation { target: view; property: "x"; to: - root.width + 1; duration: root.width - view.x; easing.type: Easing.InOutQuad }
                     NumberAnimation { target: view; property: "opacity"; to: 0.0; duration: root.width - view.x }
                 }
-                PropertyAnimation { target: root; property: "state"; to: "HIDDEN" } 
                 ScriptAction { script: freeze() }
+                PropertyAnimation { target: root; property: "state"; to: "HIDDEN" }
             }
         },
         Transition {
