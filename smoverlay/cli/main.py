@@ -29,7 +29,7 @@ class Manager:
         self.minPollInterval = 1000
 
     def add(self, monitor):
-        self.minPollInterval = min(monitor.pollInterval, self.minPollInterval)
+        self.minPollInterval = min(monitor.config["refresh"], self.minPollInterval)
         self.monitors.append(monitor)
 
     def run(self):

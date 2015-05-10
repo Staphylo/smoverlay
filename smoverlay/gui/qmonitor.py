@@ -11,7 +11,6 @@ class QMonitorManager(QObject):
         self.monitors = []
 
     def add(self, monitor):
-        self.minPollInterval = min(monitor.pollInterval, self.minPollInterval)
         if monitor.name() in self.monitors:
             raise ValueError("monitor %s already present" % monitor.name())
         self.monitors[monitor.name()] = monitor
@@ -29,9 +28,9 @@ class QMonitor(QmlObject):
         QObject.__init__(self)
         self.qtypes_ = [ self.__class__ ]
         self.monitor = mon
-        self.monitor_view_ = "plugins/" + name.lower() + "/" + view
+        self.monitor_view_ = "../../plugins/" + name.lower() + "/" + view
         self.monitor_name_ = name
-        self.updateInterval_ = mon.pollInterval * 1000
+        self.updateInterval_ = mon.config["refresh"] * 1000
 
     def loadConfig(self, config):
         return self.monitor.loadConfig(config)

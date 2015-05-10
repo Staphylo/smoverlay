@@ -1,4 +1,4 @@
-from PyQt5.QtCore import QObject, QVariant, pyqtSignal, pyqtProperty, pyqtSlot
+from PyQt5.QtCore import QObject, QVariant, pyqtSlot
 
 from smoverlay.gui.qmonitor import QMonitor
 from smoverlay.gui.qmlobject import QmlObject, qmlProperty
@@ -24,7 +24,7 @@ class QNetworkMonitor(QMonitor):
     interfaces = qmlProperty(QVariant)
 
     def __init__(self):
-        QMonitor.__init__(self, NetworkMonitor(), "Network", "RCNetwork.qml")
+        QMonitor.__init__(self, NetworkMonitor(), "Network", "network.qml")
         self.qtypes_ += [QInterface]
 
     @pyqtSlot()

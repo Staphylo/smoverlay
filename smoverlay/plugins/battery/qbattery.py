@@ -9,7 +9,7 @@ class QBatteryMonitor(QMonitor):
     status = qmlProperty('QString')
 
     def __init__(self):
-        QMonitor.__init__(self, BatteryMonitor(), "Battery", "RCBattery.qml")
+        QMonitor.__init__(self, BatteryMonitor(), "Battery", "battery.qml")
 
     @pyqtSlot()
     def update(self):

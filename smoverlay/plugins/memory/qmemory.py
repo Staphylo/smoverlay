@@ -24,7 +24,7 @@ class QMemoryMonitor(QMonitor):
     memory = qmlProperty(QMemory)
 
     def __init__(self):
-        QMonitor.__init__(self, MemoryMonitor(), "Memory", "RCMemory.qml")
+        QMonitor.__init__(self, MemoryMonitor(), "Memory", "memory.qml")
         self.qtypes_ += [QMemory]
         self.memory_ = QMemory(self.monitor.memory)
 

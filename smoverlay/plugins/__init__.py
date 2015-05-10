@@ -25,7 +25,7 @@ for plugin in plugins:
         #print("Loading plugin %s" % plugin)
         parent = import_module("smoverlay.plugins." + plugin)
         for f in files:
-            if f.startswith('__'):
+            if f.startswith('__') or not f.endswith('.py'):
                 continue
             filename = os.path.join(subdir, f)
             #print(" - %s" % filename)

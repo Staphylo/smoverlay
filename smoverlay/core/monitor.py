@@ -2,12 +2,13 @@ import time
 
 class Monitor:
     def __init__(self):
-        self.pollInterval = 1.
         self.previousUpdate = 0
-        self.config = {}
+        self.config = {
+            "refresh": 1
+        }
 
     def autodetect(self):
-        return { "refresh": self.pollInterval }
+        return { "refresh": 1 }
 
     def loadConfig(self, config):
         self.config = config
@@ -15,11 +16,8 @@ class Monitor:
     def dumpConfig(self):
         return self.config
 
-    def refreshEvery(self, seconds):
-        self.pollInterval = seconds
-
     def needUpdate(self, time):
-        return time - self.previousUpdate >= self.pollInterval
+        return time - self.previousUpdate >= self.config["refresh"]
 
     def _update(self, current):
         elapsed = current - self.previousUpdate

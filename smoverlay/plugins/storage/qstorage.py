@@ -17,7 +17,7 @@ class QStorageMonitor(QMonitor):
     disks = qmlProperty(QVariant)
 
     def __init__(self):
-        QMonitor.__init__(self, StorageMonitor(), "Storage", "RCStorage.qml") #"RCGroup.qml")
+        QMonitor.__init__(self, StorageMonitor(), "Storage", "storage.qml")
         self.qtypes_ += [QDisk]
 
     @pyqtSlot()

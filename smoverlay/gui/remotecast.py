@@ -45,6 +45,7 @@ class Remotecast(QmlObject):
         self.overlayHeight_ = 0
         self.wifiEssid_ = 0
         self.wifiSignal_ = -1
+        self.updateWifi()
 
     @pyqtSlot()
     def updateWifi(self):
