@@ -33,6 +33,9 @@ class QMonitor(QmlObject):
         self.monitor_name_ = name
         self.updateInterval_ = mon.pollInterval * 1000
 
+    def loadConfig(self, config):
+        return self.monitor.loadConfig(config)
+
     def types(self):
         return self.qtypes_
 

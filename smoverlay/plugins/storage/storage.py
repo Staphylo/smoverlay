@@ -7,12 +7,23 @@ from smoverlay.core.monitor import Monitor
 class StorageMonitor(Monitor):
     def __init__(self):
         Monitor.__init__(self)
-        self.mountpoints = [];
+        self.config["mountpoints"] = []
         self.disks = {}
         self.populate()
 
-    def watch(self, mountpoint):
-        self.mountpoints.append(mountpoint)
+    def autodetect(self):
+        config = Monitor.autodetect(self)
+        skipfs = ["proc", "sysfs", "devtmpfs", "securityfs", "debugfs",
+                  "devpts", "cgroup", "pstore", "efivarfs", "configfs",
+                  "autofs", "hugetlbfs", "mqueue", "binfmt_misc"]
+        skippaths = ('/run', '/sys', '/dev')
+        config["mountpoints"] = []
+        with open("/proc/mounts") as f:
+            for line in f.readlines():
+                tokens = line.split()
+                if tokens[2] not in skipfs and not tokens[1].startswith(skippaths):
+                    config["mountpoints"].append(tokens[1])
+        return config
 
     def update_mountpoint(self, mountpoint, usage, io):
         try:
@@ -51,7 +62,7 @@ class StorageMonitor(Monitor):
     def update(self, elapsed):
         disksio = psutil.disk_io_counters(perdisk=True)
         partitions = psutil.disk_partitions(all=True) # only mounted: all=True)
-        for mountpoint in self.mountpoints:
+        for mountpoint in self.config["mountpoints"]:
             p = [ x for x in partitions if x.mountpoint == mountpoint ]
             if len(p) == 0:
                 raise ValueError("Unknown mountpoint %s" % (mountpoint,) )

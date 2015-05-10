@@ -3,7 +3,8 @@ import struct
 import array
 import fcntl
 
-from PyQt5.QtCore import QObject, pyqtProperty, pyqtSlot, pyqtSignal
+from PyQt5.QtCore import QObject, pyqtSlot
+from smoverlay.gui.qmlobject import QmlObject, qmlProperty
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 maxLength = {
@@ -28,57 +29,22 @@ def getEssid(interface):
         return name
     return None
 
-class Remotecast(QObject):
-    overlayWidthChanged_ = pyqtSignal()
-    overlayHeightChanged_ = pyqtSignal()
+class Remotecast(QmlObject):
+    screenWidth = qmlProperty(int)
+    screenHeight = qmlProperty(int)
+    overlayWidth = qmlProperty(int)
+    overlayHeight = qmlProperty(int)
+    wifiEssid = qmlProperty('QString')
+    wifiSignal = qmlProperty(int)
+
     def __init__(self):
         QObject.__init__(self)
         self.screenWidth_ = 0
         self.screenHeight_ = 0
         self.overlayWidth_ = 0
         self.overlayHeight_ = 0
-        self.overlayWidthChanged_.connect(self.overlayWidthChanged)
-        self.overlayHeightChanged_.connect(self.overlayHeightChanged)
         self.wifiEssid_ = 0
         self.wifiSignal_ = -1
-
-    @pyqtProperty(int, notify=overlayWidthChanged_)
-    def overlayWidth(self):
-        return self.overlayWidth_
-
-    @overlayWidth.setter
-    def overlayWidth(self, value):
-        self.overlayWidth_ = value
-
-    def overlayWidthChanged(self):
-        print("bite width",value)
-
-    @pyqtProperty(int, notify=overlayHeightChanged_)
-    def overlayHeight(self):
-        return self.overlayHeight_
-
-    @overlayHeight.setter
-    def overlayHeight(self, value):
-        self.overlayHeight_ = value
-
-    def overlayHeightChanged(self):
-        print("bite height",value)
-
-    @pyqtProperty(int)
-    def screenWidth(self):
-        return self.screenWidth_;
-
-    @screenWidth.setter
-    def screenWidth(self, value):
-        self.screenWidth_ = value
-
-    @pyqtProperty(int)
-    def screenHeight(self):
-        return self.screenHeight_;
-
-    @screenHeight.setter
-    def screenHeight(self, value):
-        self.screenHeight_ = value
 
     @pyqtSlot()
     def updateWifi(self):
@@ -86,8 +52,8 @@ class Remotecast(QObject):
         with open('/proc/net/wireless') as f:
             lines = f.readlines()[2:]
         if not lines:
-            self.wifiEssid_ = ""
-            self.wifiSignal_ = -1
+            self.wifiEssid = ""
+            self.wifiSignal = -1
             return
         ifaces = {}
         for line in lines:
@@ -95,20 +61,12 @@ class Remotecast(QObject):
             ifaces[data[0]] = data[1:]
 
         for iface, data in ifaces.items():
-            self.wifiEssid_ = getEssid(iface)
-            self.wifiSignal_ = int(float(data[1]))
-
-    @pyqtProperty('QString')
-    def wifiEssid(self):
-        return self.wifiEssid_;
-
-    @pyqtProperty(int)
-    def wifiSignal(self):
-        return self.wifiSignal_;
+            self.wifiEssid = getEssid(iface)
+            self.wifiSignal = int(float(data[1]))
 
     def setGeometry(self, rect):
-        self.screenHeight_ = rect.height()
-        self.screenWidth_ = rect.width()
-        self.overlayHeight_ = self.screenHeight
-        self.overlayWidth_ = 250
+        self.screenHeight = rect.height()
+        self.screenWidth = rect.width()
+        self.overlayHeight = self.screenHeight
+        self.overlayWidth = 250
 

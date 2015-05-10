@@ -1,6 +1,16 @@
-#!/usr/bin/env python3
+"""
+Usage: smoverlay [--debug] [--config filename] [--info] [--write] [--notify]
+
+Options:
+    --debug             add verbosity
+    --config filename   load this configuration file [default: ~/.smoverlayrc]
+    --info              display information
+    --notify            send a signal to a running process
+"""
 
 import sys
+from docopt import docopt
+from collections import OrderedDict
 
 from PyQt5.QtCore import *
 from PyQt5.QtGui import QSurface, QSurfaceFormat, QColor
@@ -8,9 +18,11 @@ from PyQt5.QtWidgets import QApplication
 from PyQt5.QtQuick import QQuickView
 from PyQt5.QtQml import QJSValue, qmlRegisterType, QQmlListProperty
 
-#from smoverlay.gui.qmonitor import QMonitor
 from smoverlay.plugins import qmonitors
 from smoverlay.gui.remotecast import Remotecast
+from smoverlay.core.config import loadConfig, generateConfig, dumpConfig
+
+docstring = __doc__
 
 try:
     import signal
@@ -25,11 +37,7 @@ def listScreens(desktop):
             print("primary ", end="")
         print("screen %d: %dx%d" % (i, rect.width(), rect.height()))
 
-def main():
-    app = QApplication(sys.argv)
-
-    desktop = QApplication.desktop()
-    listScreens(desktop)
+def createWindow():
 
     view = QQuickView()
     view.setSurfaceType(QSurface.OpenGLSurface)
@@ -52,43 +60,27 @@ def main():
     context = view.rootContext()
 
     qmlRegisterType(Remotecast, "remotecast", 1, 0, "RemoteCast")
+    return (view, context)
+
+def runApplication(config):
+    app = QApplication([sys.argv[0]])
+
+    desktop = QApplication.desktop()
+    listScreens(desktop)
+
+    (view, context) = createWindow()
+
     rc = Remotecast()
     rc.setGeometry(desktop.screenGeometry(desktop.primaryScreen()))
     context.setContextProperty('cast', rc)
     context.setContextProperty('view', view)
 
-    # :: storage
-    #qsm = QStorageMonitor()
-    qsm = qmonitors["storage"]()
-    sm = qsm.monitor
-    sm.watch("/")
-    sm.watch("/tmp")
-
-    # :: memory
-    #qmm = QMemoryMonitor()
-    qmm = qmonitors["memory"]()
-    #mm = qmm.monitor
-
-    # :: network
-    qnm = qmonitors["network"]()
-    #qnm = QNetworkMonitor()
-
-    # :: battery
-    qbm = qmonitors["battery"]()
-
-    monitors = {
-        "Storage": qsm,
-        "Memory": qmm,
-        "Network": qnm,
-        "Battery": qbm
-    }
-
-    #types = [
-    #    QMonitor,
-    #    QMemoryMonitor, QMemory,
-    #    QStorageMonitor, QDisk,
-    #    QNetworkMonitor, QInterface,
-    #]
+    monitors = OrderedDict()
+    for plugin in config["plugins"]:
+        for name, data in plugin.items():
+            m = qmonitors[data["plugin"]]()
+            m.loadConfig(data["config"])
+            monitors[name] = m
 
     types = []
     for monitor in monitors.values():
@@ -105,6 +97,7 @@ def main():
     monitorList = [v for k, v in monitors.items()]
 
     context.setContextProperty("monitors", monitorList)
+
     #view.setSource(QUrl("qml/main.qml"))
     view.setSource(QUrl("gui/qml/main.qml"))
 
@@ -116,7 +109,32 @@ def main():
     view.engine().quit.connect(app.quit)
 
     view.show()
-    sys.exit(app.exec())
+    return app.exec()
+
+def information():
+    print("Plugin loaded:")
+    for name, cls in qmonitors.items():
+        print(" - %s (%s)" % (name, cls))
+
+def main():
+    args = docopt(docstring, version="devel")
+
+    dumpconfig = False
+    if args["--info"]:
+        information()
+        return 0
+    if args["--debug"]:
+        pass
+    if args["--write"]:
+        dumpconfig = True
+
+    config = loadConfig(args["--config"])
+    if not config:
+        config = generateConfig()
+        if dumpconfig:
+            dumpConfig(args["--config"], config)
+
+    return runApplication(config)
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

@@ -22,7 +22,7 @@ monitors = {}
 qmonitors = {}
 for plugin in plugins:
     for subdir, dirs, files in os.walk(os.path.join(pluginspath, plugin)):
-        print("Loading plugin %s" % plugin)
+        #print("Loading plugin %s" % plugin)
         parent = import_module("smoverlay.plugins." + plugin)
         for f in files:
             if f.startswith('__'):
@@ -34,7 +34,7 @@ for plugin in plugins:
             #sys.modules["smoverlay.plugins." + plugin] = []
             loader = SourceFileLoader(modname, filename)
             mod = loader.load_module()
-            setattr(mod, modname, mod) 
+            setattr(mod, modname, mod)
             for objname in dir(mod):
                 if objname.startswith('__'):
                     continue
