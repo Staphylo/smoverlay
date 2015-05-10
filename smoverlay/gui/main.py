@@ -9,6 +9,7 @@ Options:
 """
 
 import sys
+import os
 from docopt import docopt
 from collections import OrderedDict
 
@@ -98,8 +99,10 @@ def runApplication(config):
 
     context.setContextProperty("monitors", monitorList)
 
-    #view.setSource(QUrl("qml/main.qml"))
-    view.setSource(QUrl("gui/qml/main.qml"))
+    qmlpath = "gui/qml/main.qml"
+    if not os.path.exists(qmlpath):
+        qmlpath = "smoverlay/" + qmlpath
+    view.setSource(QUrl.fromLocalFile(qmlpath))
 
     view.setResizeMode(QQuickView.SizeRootObjectToView)
     #view.rootObject().window().move(desktop.screenGeometry(1).topLeft())

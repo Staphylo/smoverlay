@@ -56,7 +56,7 @@ Rectangle {
             anchors.left: parent.left
             anchors.top: parent.top
 
-            height: 100;
+            height: 100
         }
 
         RCBody {
@@ -65,9 +65,20 @@ Rectangle {
             anchors.right: parent.right
             anchors.left: parent.left
             anchors.top: header.bottom
-            anchors.bottom: parent.bottom
+            anchors.bottom: footer.top
             anchors.topMargin: 10
+        }
 
+        RCFooter {
+            id: footer
+
+            anchors.bottom: parent.bottom
+            anchors.right: parent.right
+            anchors.left: parent.left
+
+            height: 90
+
+            anchors.topMargin: 10
         }
     }
 

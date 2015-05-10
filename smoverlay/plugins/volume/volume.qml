@@ -20,7 +20,7 @@ Rectangle {
         function toggle_mute() {
             muted = !muted
             if (muted)
-                image.source = "../res/volume/muted.svg"
+                image.source = "res/muted.svg"
             else
                 update_volume()
         }
@@ -29,7 +29,7 @@ Rectangle {
             var val = Math.floor(slider.value / 25) * 25
             if (val == 100)
                 val = 75
-            var img = "../res/volume/" +  val + ".svg"
+            var img = "res/" +  val + ".svg"
             image.source = img
         }
 
