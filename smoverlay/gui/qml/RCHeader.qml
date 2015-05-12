@@ -1,10 +1,6 @@
-// Header { }
-
 import QtQuick 2.2
 
 Rectangle {
-    id: header
-
     color: "#FF383e4b"
 
     Item {
@@ -67,15 +63,15 @@ Rectangle {
         property var wifi_text : ""
 
         function infoUpdate() {
-            cast.updateWifi()
-            var sig = cast.wifiSignal
+            smoverlay.updateWifi()
+            var sig = smoverlay.wifiSignal
             if (sig == -1) {
                 wifi_image = "../res/wifi/na.svg"
                 wifi_text = "No network"
             } else {
                 var img = (Math.floor(sig / 25) * 25)
                 wifi_image = "../res/wifi/" + img +".svg"
-                wifi_text = cast.wifiEssid
+                wifi_text = smoverlay.wifiEssid
             }
         }
 

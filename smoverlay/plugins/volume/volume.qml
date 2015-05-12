@@ -6,6 +6,8 @@ Rectangle {
 
     color: "#FF383e4b"
 
+    property variant monitor
+
     height: 100
     width: 320
 
@@ -15,17 +17,16 @@ Rectangle {
         anchors.fill: parent
         anchors.margins: 10
 
-        property bool muted: false
-
         function toggle_mute() {
-            muted = !muted
-            if (muted)
+            monitor.muted = !monitor.muted
+            if (monitor.muted)
                 image.source = "res/muted.svg"
             else
                 update_volume()
         }
 
         function update_volume() {
+            monitor.volume = slider.value
             var val = Math.floor(slider.value / 25) * 25
             if (val == 100)
                 val = 75
@@ -84,10 +85,13 @@ Rectangle {
 
             maximumValue: 100
             minimumValue: 0
-            value: 50
+            //value: monitor.volume
+            value: 0
             stepSize: 1
 
             onValueChanged: volume.update_volume()
         }
+
+        Component.onCompleted: update_volume()
     }
 }

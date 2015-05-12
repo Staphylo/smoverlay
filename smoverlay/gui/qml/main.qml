@@ -2,17 +2,19 @@ import QtQuick 2.2
 import QtQuick.Controls 1.1
 import QtQuick.Controls.Styles 1.1
 
-//import remotecast 1.0
-
 Rectangle {
     id: root
 
-    width: cast.overlayWidth;
-    height: cast.overlayHeight;
+    width: ui.overlayWidth;
+    height: ui.overlayHeight;
 
     // comment to show by default
-    function freeze() {  console.log("freeze") }
-    function unfreeze() { console.log("unfreeze") }
+    function freeze() {
+        console.log("freeze")
+    }
+    function unfreeze() {
+        console.log("unfreeze")
+    }
     //function freeze() {  console.log("freeze"); root.setUpdatesEnabled = false }
     //function unfreeze() { console.log("unfreeze"); root.setUpdatesEnabled = true }
 
@@ -76,7 +78,7 @@ Rectangle {
             anchors.right: parent.right
             anchors.left: parent.left
 
-            height: 90
+            height: 50
 
             anchors.topMargin: 10
         }
@@ -106,12 +108,11 @@ Rectangle {
             from: "VISIBLE"
             to: "HIDE"
             SequentialAnimation {
-                PauseAnimation { duration: 500 }
+                PauseAnimation { duration: ui.hideDelay }
                 ParallelAnimation {
-                    NumberAnimation { target: view; property: "x"; to: - root.width + 1; duration: root.width - view.x; easing.type: Easing.InOutQuad  }
-                    NumberAnimation { target: view; property: "opacity"; to: 0.0; duration: root.width - view.x }
+                    NumberAnimation { target: view; property: "x"; to: ui.overlayHideX; easing.type: Easing.InOutQuad  }
+                    NumberAnimation { target: view; property: "opacity"; to: ui.opacityHide }
                 }
-                //NumberAnimation { properties: "x, opacity"; easing.type: Eeasing.InOutQuad }
                 ScriptAction { script: freeze() }
                 PropertyAnimation { target: root; property: "state"; to: "HIDDEN" } 
             }
@@ -121,8 +122,8 @@ Rectangle {
             to: "HIDE"
             SequentialAnimation {
                 ParallelAnimation {
-                    NumberAnimation { target: view; property: "x"; to: - root.width + 1; duration: root.width - view.x; easing.type: Easing.InOutQuad }
-                    NumberAnimation { target: view; property: "opacity"; to: 0.0; duration: root.width - view.x }
+                    NumberAnimation { target: view; property: "x"; to: ui.overlayHideX; easing.type: Easing.InOutQuad }
+                    NumberAnimation { target: view; property: "opacity"; to: ui.opacityHide }
                 }
                 ScriptAction { script: freeze() }
                 PropertyAnimation { target: root; property: "state"; to: "HIDDEN" }
@@ -132,11 +133,11 @@ Rectangle {
             from: "HIDDEN"
             to: "SHOW"
             SequentialAnimation {
-                PauseAnimation { duration: 200 }
+                PauseAnimation { duration: ui.showDelay }
                 ScriptAction { script: unfreeze() }
                 ParallelAnimation {
-                    NumberAnimation { target: view; property: "x"; to: 0; duration: - view.x; easing.type: Easing.InOutQuad }
-                    NumberAnimation { target: view; property: "opacity"; to: 1.0; duration: - view.x }
+                    NumberAnimation { target: view; property: "x"; to: ui.overlayShowX; easing.type: Easing.InOutQuad }
+                    NumberAnimation { target: view; property: "opacity"; to: ui.opacityShow; }
                 }
                 PropertyAnimation { target: root; property: "state"; to: "VISIBLE" } //to: "VISIBLE" }
             }
@@ -146,12 +147,14 @@ Rectangle {
             to: "SHOW"
             SequentialAnimation {
                 ParallelAnimation {
-                    NumberAnimation { target: view; property: "x"; to: 0; duration: x - view.x; easing.type: Easing.InOutQuad }
-                    NumberAnimation { target: view; property: "opacity"; to: 1.0; duration: x - view.x }
+                    NumberAnimation { target: view; property: "x"; to: ui.overlayShowX; easing.type: Easing.InOutQuad }
+                    NumberAnimation { target: view; property: "opacity"; to: ui.opacityShow }
                 }
                 PropertyAnimation { target: root; property: "state"; to: "VISIBLE" } //to: "VISIBLE" }
             }
         }
     ]
+
+    Component.onCompleted: console.log(JSON.stringify(ui, null, 4))
 
 }

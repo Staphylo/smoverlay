@@ -5,16 +5,18 @@ from smoverlay.gui.qmlobject import QmlObject, qmlProperty
 from .volume import VolumeMonitor
 
 class QVolumeMonitor(QMonitor):
-    volume = qmlProperty(int, 'volumeChanged')
-    muted = qmlProperty(bool, 'mutedChanged')
+    volume = qmlProperty(int)
+    muted = qmlProperty(bool)
 
     def __init__(self):
         QMonitor.__init__(self, VolumeMonitor(), "Volume", "volume.qml")
         self.muted_ = False
         self.volume_ = 0
+        self.volumeChanged.connect(self.onVolumeChanged)
+        self.mutedChanged.connect(self.onMutedChanged)
 
-    def volumeChanged(self, volume):
+    def onVolumeChanged(self, volume):
         print("new volume:", volume)
 
-    def mutedChanged(self, muted):
-        print("toggle mute")
+    def onMutedChanged(self, muted):
+        print("toggle mute", muted)

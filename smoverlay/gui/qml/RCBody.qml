@@ -6,12 +6,7 @@ Item {
     ListView {
         id: monitor_list
 
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.top: parent.top
-        anchors.bottom: row.top
-
-        height: 500
+        anchors.fill: parent
 
         interactive: false
         spacing: 10
@@ -45,8 +40,7 @@ Item {
             function finishLoadMonitors() {
                 if (component.status == Component.Ready) {
                     sprite = component.createObject(monitor, {
-                        "anchors.left": monitor.left,
-                        "anchors.right": monitor.right,
+                        "anchors.fill": monitor,
                         //"height": 50,
                         "title": modelData.monitor_name,
                         "monitor": modelData,

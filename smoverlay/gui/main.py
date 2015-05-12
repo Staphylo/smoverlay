@@ -20,8 +20,10 @@ from PyQt5.QtQuick import QQuickView
 from PyQt5.QtQml import QJSValue, qmlRegisterType, QQmlListProperty
 
 from smoverlay.plugins import qmonitors
-from smoverlay.gui.remotecast import Remotecast
 from smoverlay.core.config import loadConfig, generateConfig, dumpConfig
+
+from .header import Header
+from .config import UIConfig, UIStyle
 
 docstring = __doc__
 
@@ -39,7 +41,6 @@ def listScreens(desktop):
         print("screen %d: %dx%d" % (i, rect.width(), rect.height()))
 
 def createWindow():
-
     view = QQuickView()
     view.setSurfaceType(QSurface.OpenGLSurface)
 
@@ -60,7 +61,6 @@ def createWindow():
 
     context = view.rootContext()
 
-    qmlRegisterType(Remotecast, "remotecast", 1, 0, "RemoteCast")
     return (view, context)
 
 def runApplication(config):
@@ -71,10 +71,16 @@ def runApplication(config):
 
     (view, context) = createWindow()
 
-    rc = Remotecast()
-    rc.setGeometry(desktop.screenGeometry(desktop.primaryScreen()))
-    context.setContextProperty('cast', rc)
+    header = Header()
+    context.setContextProperty('smoverlay', header)
     context.setContextProperty('view', view)
+
+    if "gui" not in config:
+        config["gui"] = UIConfig.defaultConfig(desktop)
+
+    ui = UIConfig(config["gui"])
+    ui.setGeometry(desktop)
+    context.setContextProperty('ui', ui)
 
     monitors = OrderedDict()
     for plugin in config["plugins"]:
@@ -83,7 +89,7 @@ def runApplication(config):
             m.loadConfig(data["config"])
             monitors[name] = m
 
-    types = []
+    types = [UIConfig, UIStyle]
     for monitor in monitors.values():
         types += monitor.types()
 
@@ -133,6 +139,7 @@ def main():
 
     config = loadConfig(args["--config"])
     if not config:
+        #configLoader(generateGuiConfig)
         config = generateConfig()
         if dumpconfig:
             dumpConfig(args["--config"], config)

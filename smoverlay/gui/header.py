@@ -3,8 +3,7 @@ import struct
 import array
 import fcntl
 
-from PyQt5.QtCore import QObject, pyqtSlot
-from smoverlay.gui.qmlobject import QmlObject, qmlProperty
+from smoverlay.gui.qmlobject import QmlObject, qmlProperty, QObject, pyqtSlot
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 maxLength = {
@@ -29,20 +28,12 @@ def getEssid(interface):
         return name
     return None
 
-class Remotecast(QmlObject):
-    screenWidth = qmlProperty(int)
-    screenHeight = qmlProperty(int)
-    overlayWidth = qmlProperty(int)
-    overlayHeight = qmlProperty(int)
+class Header(QmlObject):
     wifiEssid = qmlProperty('QString')
     wifiSignal = qmlProperty(int)
 
     def __init__(self):
         QObject.__init__(self)
-        self.screenWidth_ = 0
-        self.screenHeight_ = 0
-        self.overlayWidth_ = 0
-        self.overlayHeight_ = 0
         self.wifiEssid_ = 0
         self.wifiSignal_ = -1
         self.updateWifi()
@@ -65,9 +56,4 @@ class Remotecast(QmlObject):
             self.wifiEssid = getEssid(iface)
             self.wifiSignal = int(float(data[1]))
 
-    def setGeometry(self, rect):
-        self.screenHeight = rect.height()
-        self.screenWidth = rect.width()
-        self.overlayHeight = self.screenHeight
-        self.overlayWidth = 250
 

@@ -3,7 +3,8 @@
 # https://gist.github.com/mrzechonek/bd7c059b5742a9c1a7fd
 #
 
-from PyQt5.QtCore import QObject, pyqtWrapperType, pyqtProperty, pyqtSignal
+from PyQt5.QtCore import QObject, pyqtWrapperType, pyqtProperty, pyqtSignal, \
+                         pyqtSlot
 
 class qmlProperty:
     """

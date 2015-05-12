@@ -13,6 +13,6 @@ setup(
         ],
     },
     package_data = {
-        'remotecast.gui': ['qml/**/*.qml', 'icons/**/*.svg', 'icons/**/*.png' ],
+        'smoverlay.gui': ['qml/**/*.qml', 'icons/**/*.svg', 'icons/**/*.png' ],
     },
 )
