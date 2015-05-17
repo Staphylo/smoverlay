@@ -1,21 +1,20 @@
-import QtQuick 2.2
+import QtQuick 2.4
 import QtQuick.Layouts 1.1
-import QtQuick.Controls 1.1
+import QtQuick.Controls 1.3
 
 Rectangle {
 
     color: "#FF383e4b"
 
     property variant monitor
-
-    height: 100
-    width: 320
+    height: volume.height
 
     Item {
         id: volume
 
         anchors.fill: parent
         anchors.margins: 10
+        height: 100
 
         function toggle_mute() {
             monitor.muted = !monitor.muted

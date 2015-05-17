@@ -1,6 +1,6 @@
-import QtQuick 2.2
-import QtQuick.Controls 1.1
-import QtQuick.Controls.Styles 1.1
+import QtQuick 2.4
+import QtQuick.Controls 1.3
+import QtQuick.Controls.Styles 1.3
 
 Rectangle {
     id: root
@@ -51,36 +51,10 @@ Rectangle {
         onEntered: root.state = "SHOW"
         onExited: root.state = "HIDE"
 
-        RCHeader {
-            id: header
-
-            anchors.right: parent.right
-            anchors.left: parent.left
-            anchors.top: parent.top
-
-            height: 100
-        }
-
         RCBody {
             id: body
-
-            anchors.right: parent.right
-            anchors.left: parent.left
-            anchors.top: header.bottom
-            anchors.bottom: footer.top
-            anchors.topMargin: 10
-        }
-
-        RCFooter {
-            id: footer
-
-            anchors.bottom: parent.bottom
-            anchors.right: parent.right
-            anchors.left: parent.left
-
-            height: 50
-
-            anchors.topMargin: 10
+            height: parent.height
+            anchors.fill: parent
         }
     }
 

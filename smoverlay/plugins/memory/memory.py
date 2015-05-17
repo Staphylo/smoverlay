@@ -14,4 +14,6 @@ class MemoryMonitor(Monitor):
         self.memory = psutil.virtual_memory()
         if self.monitorswap:
             self.swap = psutil.swap_memory()
+            if self.swap.total == 0:
+                self.monitorswap = False
 

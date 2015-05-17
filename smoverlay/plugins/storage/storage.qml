@@ -1,5 +1,4 @@
-
-import QtQuick 2.2
+import QtQuick 2.4
 import QtQuick.Controls 1.3
 import QtQuick.Controls.Styles 1.3
 
@@ -8,10 +7,8 @@ Rectangle {
     //property variant monitor
     //title: monitor.name
 
-    property variant monitor
-    property variant title: monitor.name
-
     anchors.fill: parent
+    height: view.height
 
     // height: disks.count * diskview.height
 
@@ -21,6 +18,7 @@ Rectangle {
     }
 
     ScrollView {
+        id: view
         anchors.fill: parent
 
         verticalScrollBarPolicy: Qt.ScrollBarAlwaysOff

@@ -25,6 +25,7 @@ class QNetworkMonitor(QMonitor):
 
     def __init__(self):
         QMonitor.__init__(self, NetworkMonitor(), "Network", "network.qml")
+        self.monitorHeight_ = 0
         self.qtypes_ += [QInterface]
 
     @pyqtSlot()
@@ -42,6 +43,7 @@ class QNetworkMonitor(QMonitor):
                 else:
                     data = data[0]
                     data.update(iface, info)
+        self.monitorHeight = len(self.monitor.interfaces) * 32
 
 
 

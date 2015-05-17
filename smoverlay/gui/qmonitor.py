@@ -20,20 +20,32 @@ class QMonitorManager(QObject):
         return self.monitors.get(monitor, None)
 
 class QMonitor(QmlObject):
-    monitor_name = qmlProperty('QString')
-    monitor_view = qmlProperty('QString')
+    monitorName = qmlProperty('QString')
+    monitorView = qmlProperty('QString')
+    monitorHeight = qmlProperty(int)
     updateInterval = qmlProperty(int)
 
     def __init__(self, mon, name, view):
         QObject.__init__(self)
         self.qtypes_ = [ self.__class__ ]
         self.monitor = mon
-        self.monitor_view_ = "../../plugins/" + name.lower() + "/" + view
-        self.monitor_name_ = name
+        self.monitorView_ = "../../plugins/" + name.lower() + "/" + view
+        self.monitorName_ = name
         self.updateInterval_ = mon.config["refresh"] * 1000
+        if "height" in mon.config:
+            self.monitorHeight = mon.config.setdefault("height", 100)
 
     def loadConfig(self, config):
-        return self.monitor.loadConfig(config)
+        self.monitor.loadConfig(config)
+        #print(self.__class__.__name__, self.monitor.config)
+        self.updateInterval = self.monitor.config["refresh"] * 1000
+        if "height" in self.monitor.config:
+            self.monitorHeight = self.monitor.config["height"]
+
+    #def defaultConfig(self):
+    #    default = self.monitor.defaultConfig()
+    #    default["height"] = 1000
+    #    return default
 
     def types(self):
         return self.qtypes_

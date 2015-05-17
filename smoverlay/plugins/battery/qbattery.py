@@ -10,6 +10,7 @@ class QBatteryMonitor(QMonitor):
 
     def __init__(self):
         QMonitor.__init__(self, BatteryMonitor(), "Battery", "battery.qml")
+        self.monitorHeight_ = 40
 
     @pyqtSlot()
     def update(self):

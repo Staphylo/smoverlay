@@ -1,0 +1,54 @@
+Core
+----
+
+ - allow option parser to be hookable by each main()
+   BUG currently the gui config is not written out during creation
+ - be able to load plugins outside the package following configuration paths
+ - be able to notify a running process as a reloading mechanism
+    - update/reload all plugins
+    - update/relead every plugins
+    - reload configuration
+
+Gui
+---
+
+ - Fix the plugin size in QML (actually a hack by having QMonitor.pluginHeight)
+
+ - Show exit button only for debugging (see configuration file)
+ - Drag and drop to reorder plugins (saving layout imply rewriting configuration)
+ - Disable updating/rendering when hidden (currently a failure for rendering)
+ - Signal are class signal and not object signal
+ - Smoothing transitions from one value to an other
+
+Plugins
+-------
+
+### Storage
+ - Show space somwhere total/available
+ - Show devices
+ - Show devices speed
+ - Add graphs
+ - Show process that write/read and their speed ( cat /proc/[0-9]+/fd{,info} )
+
+### Network
+ - On click on an interface, show which program at which speed
+ - Show graphs
+
+### Battery
+ - Add estimated time left between charged/discharged
+ - Show battery death (FULL_DESIGN - FULL) with another color
+ - Show usage Graph
+    - Could also corrolate cpu most using process to battery usage as a
+      percentage
+
+### RAM
+ - Add swap support
+ - On click display process using the more ram
+    - Add a [x] kill button to be able to kill this process
+ - Show cached/buffers(/slabinfo)?
+ - Show graphs
+
+### CPU
+ - Add graph
+ - List more demanding process
+   - kill | stop button for each one

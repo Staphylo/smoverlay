@@ -93,13 +93,15 @@ def runApplication(config):
     for monitor in monitors.values():
         types += monitor.types()
 
-    print(types)
+    print("types registered: ", types)
 
     for typ in types:
         qmlRegisterType(typ, "lol", 1, 0, typ.__name__)
 
-    for mon in monitors.values():
-        mon.update()
+    # FIXME: preloading values
+    for i in range(5):
+        for mon in monitors.values():
+            mon.update()
 
     monitorList = [v for k, v in monitors.items()]
 

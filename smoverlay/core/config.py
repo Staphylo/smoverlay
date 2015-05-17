@@ -61,7 +61,7 @@ def generateConfig():
     plugins = []
     for name, cls in monitors.items():
         mon = cls()
-        moncfg = mon.autodetect()
+        moncfg = mon.defaultConfig()
         if not moncfg:
             # this monitor doesn't have any configuration meaning it's not
             # supported

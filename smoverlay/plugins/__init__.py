@@ -34,6 +34,8 @@ for plugin in plugins:
             #sys.modules["smoverlay.plugins." + plugin] = []
             loader = SourceFileLoader(modname, filename)
             mod = loader.load_module()
+            if hasattr(mod, 'PLUGIN_SKIP'):
+                continue
             setattr(mod, modname, mod)
             for objname in dir(mod):
                 if objname.startswith('__'):

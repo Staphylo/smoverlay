@@ -1,5 +1,5 @@
 import QtQuick.Controls 1.3
-import QtQuick 2.2
+import QtQuick 2.4
 
 Rectangle {
     id: box

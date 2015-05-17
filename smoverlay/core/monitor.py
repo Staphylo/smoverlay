@@ -3,15 +3,13 @@ import time
 class Monitor:
     def __init__(self):
         self.previousUpdate = 0
-        self.config = {
-            "refresh": 1
-        }
+        self.config = self.defaultConfig()
 
-    def autodetect(self):
+    def defaultConfig(self):
         return { "refresh": 1 }
 
     def loadConfig(self, config):
-        self.config = config
+        self.config.update(config)
 
     def dumpConfig(self):
         return self.config

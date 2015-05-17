@@ -1,7 +1,7 @@
-from PyQt5.QtCore import QObject, QVariant, pyqtSlot
+from PyQt5.QtCore import QVariant
 
 from smoverlay.gui.qmonitor import QMonitor
-from smoverlay.gui.qmlobject import QmlObject, qmlProperty
+from smoverlay.gui.qmlobject import QmlObject, QObject, pyqtSlot, qmlProperty
 from .storage import StorageMonitor
 
 class QDisk(QmlObject):
@@ -18,6 +18,7 @@ class QStorageMonitor(QMonitor):
 
     def __init__(self):
         QMonitor.__init__(self, StorageMonitor(), "Storage", "storage.qml")
+        self.monitorHeight_ = 0
         self.qtypes_ += [QDisk]
 
     @pyqtSlot()
@@ -30,3 +31,4 @@ class QStorageMonitor(QMonitor):
         for disk in self.disks_:
             new = self.monitor.disks[disk.mountpoint]["usage"].percent
             disk.usepercent = new
+        self.monitorHeight_ = 30 * len(self.disks_)

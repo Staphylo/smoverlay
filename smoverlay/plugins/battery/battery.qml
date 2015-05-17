@@ -1,11 +1,8 @@
-
-import QtQuick 2.2
+import QtQuick 2.4
 import QtQuick.Controls 1.3
 import QtQuick.Controls.Styles 1.3
 
 Item {
-    property variant monitor
-    property variant title: monitor.name
     property alias color : content.color
 
     anchors.fill: parent
@@ -18,12 +15,9 @@ Item {
     Rectangle {
         id: content
         //anchors.fill: parent
-
-        height: 40
-        anchors.top: parent.top 
-        anchors.bottom: scope.top
         anchors.left: parent.left
         anchors.right: parent.right
+        height: 40
 
         Text {
             id: battery_text

@@ -1,4 +1,4 @@
-import QtQuick 2.2
+import QtQuick 2.4
 import QtQuick.Layouts 1.1
 
 Item {
@@ -8,55 +8,64 @@ Item {
 
         anchors.fill: parent
 
-        interactive: false
+        //interactive: false
         spacing: 10
+
+        headerPositioning: ListView.OverlayHeader
+        header: RCHeader {
+            height: 100
+            z: 10
+            anchors.left: parent.left
+            anchors.right: parent.right
+        }
+
+        footerPositioning: ListView.OverlayFooter
+        footer: RCFooter {
+            //anchors.topMargin: 10
+            height: 50
+            z: 10
+            anchors.left: parent.left
+            anchors.right: parent.right
+        }
+
+        //section.property: "monitorName"
+        //section.delegate: Rectangle {
+        //    anchors.left: parent.left
+        //    anchors.right: parent.right
+
+        //    height: 18
+        //    color: "lightsteelblue"
+
+        //    Text {
+        //        text: section
+        //        font.bold: true
+        //        font.pixelSize: 13
+        //    }
+        //}
 
         model: monitors
         delegate: Rectangle {
             id: monitor
 
+            z: 0
             anchors.left: parent.left
             anchors.right: parent.right
-            height: 100
             color: "purple"
+            height: modelData.monitorHeight
 
-            property var component;
-            property variant sprite;
+            Loader {
+                id: loader
+                anchors.fill: parent
+                source: modelData.monitorView
 
-            function loadMonitors() {
-                console.log("monitor: ", modelData)
-                console.log(JSON.stringify(modelData, null, 4))
+                property var title: modelData.monitorName
+                property var monitor: modelData
 
-                component = Qt.createComponent(modelData.monitor_view);
-                //component = Qt.createQmlObject(model.viewsrc);
-                if (component.status == Component.Ready)
-                    finishLoadMonitors();
-                else if (component.status == Component.Error)
-                    console.log("Error loading component:", component.errorString());
-                else
-                    component.statusChanged.connect(finishLoadMonitor);
-            }
-
-            function finishLoadMonitors() {
-                if (component.status == Component.Ready) {
-                    sprite = component.createObject(monitor, {
-                        "anchors.fill": monitor,
-                        //"height": 50,
-                        "title": modelData.monitor_name,
-                        "monitor": modelData,
-                        "color": "#FF383e4b"
-                    });
-                    if (sprite == null) {
-                        console.log("Error creating object");
-                        return
-                    }
-                } else if (component.status == Component.Error) {
-                    console.log("Error loading component:", component.errorString());
-                    return
+                Component.onCompleted: {
+                    item.color = "#FF383e4b"
+                    console.log(JSON.stringify(modelData, null, 4))
                 }
             }
-
-            Component.onCompleted: loadMonitors();
         }
     }
 }

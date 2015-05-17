@@ -11,12 +11,13 @@ class StorageMonitor(Monitor):
         self.disks = {}
         self.populate()
 
-    def autodetect(self):
-        config = Monitor.autodetect(self)
+    def defaultConfig(self):
         skipfs = ["proc", "sysfs", "devtmpfs", "securityfs", "debugfs",
                   "devpts", "cgroup", "pstore", "efivarfs", "configfs",
                   "autofs", "hugetlbfs", "mqueue", "binfmt_misc"]
         skippaths = ('/run', '/sys', '/dev')
+
+        config = Monitor.defaultConfig(self)
         config["mountpoints"] = []
         with open("/proc/mounts") as f:
             for line in f.readlines():
