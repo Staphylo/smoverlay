@@ -55,28 +55,31 @@ Rectangle {
     }
 
     Item {
-        id: wifi
+        id: net
 
         anchors.fill: parent;
 
-        property var wifi_image : "../res/wifi/0.svg"
-        property var wifi_text : ""
+        property var net_image : "../res/net/na.svg"
+        property var net_text : ""
 
         function infoUpdate() {
-            smoverlay.updateWifi()
-            var sig = smoverlay.wifiSignal
-            if (sig == -1) {
-                wifi_image = "../res/wifi/na.svg"
-                wifi_text = "No network"
-            } else {
-                var img = (Math.floor(sig / 25) * 25)
-                wifi_image = "../res/wifi/" + img +".svg"
-                wifi_text = smoverlay.wifiEssid
+            smoverlay.update()
+            // FIXME: use names instead smoverlay.NET_NONE
+            if (smoverlay.connectionType == 0 ) {
+                net_text = "No network"
+                net_image = "../res/net/na.svg"
+            } else if (smoverlay.connectionType == 1 ) {
+                net_text = "Eth " + smoverlay.ethernetSpeed + " Mbit/s"
+                net_image = "../res/net/ethernet.png"
+            } else if (smoverlay.connectionType == 2 ) {
+                var imgname = Math.floor(smoverlay.wifiSignal / 25) * 25
+                net_image = "../res/net/" + imgname + ".svg"
+                net_text = smoverlay.wifiEssid
             }
         }
 
         Image {
-            id: wifi_state
+            id: net_state
 
             anchors.left: parent.left
             anchors.top: parent.top
@@ -88,20 +91,21 @@ Rectangle {
             width: 3 * parent.height / 4;
             height: 3 * parent.height / 4;
 
-            source: wifi.wifi_image
+            source: net.net_image
         }
 
         Text {
-            id: wifi_name
+            id: net_name
 
             height: parent.height / 2;
 
             //anchors.right: parent.left
             //anchors.horizontalCenter: parent.horizontalCenter
             anchors.bottom: parent.bottom
-            anchors.left: wifi_state.right
+            anchors.left: net_state.right
             //anchors.right: parent.right
 
+            anchors.leftMargin: 10
             anchors.rightMargin: 20
             anchors.bottomMargin: -15
 
@@ -109,12 +113,12 @@ Rectangle {
             font.pointSize: 13
             color: "#FFFFFFFF"
 
-            text: wifi.wifi_text
+            text: net.net_text
         }
 
         Timer  {
             interval: 1000; running: true; repeat: true;
-            onTriggered: wifi.infoUpdate()
+            onTriggered: net.infoUpdate()
         }
 
     }

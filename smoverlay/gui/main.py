@@ -117,7 +117,7 @@ def runApplication(config):
     #view.rootObject.setScreen(t
     #view.setScreen(QApplication.screens()[1])
     #view.openglContext().setScreen(QApplication.screens()[1])
-    view.engine().quit.connect(app.quit)
+    view.engine().quit.connect(QApplication.quit)
 
     view.show()
     return app.exec()

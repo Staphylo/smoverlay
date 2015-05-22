@@ -11,9 +11,14 @@ Rectangle {
     // comment to show by default
     function freeze() {
         console.log("freeze")
+        smoverlay.running = false
     }
     function unfreeze() {
         console.log("unfreeze")
+        smoverlay.running = true
+        // XXX updating every monitor
+        for (var i = 0; i < monitors.length; ++i)
+            monitors[i].update()
     }
     //function freeze() {  console.log("freeze"); root.setUpdatesEnabled = false }
     //function unfreeze() { console.log("unfreeze"); root.setUpdatesEnabled = true }

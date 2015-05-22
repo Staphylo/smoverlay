@@ -13,7 +13,7 @@ Rectangle {
     // height: disks.count * diskview.height
 
     Timer  {
-        interval: monitor.updateInterval; running: true; repeat: true;
+        interval: monitor.updateInterval; running: smoverlay.running; repeat: true;
         onTriggered: monitor.update()
     }
 
@@ -25,7 +25,6 @@ Rectangle {
         ListView {
             Component.onCompleted: {
                 console.log("disks: ", monitor.disks)
-                //console.log(JSON.stringify(monitor, null, 4))
             }
 
             anchors.fill: parent

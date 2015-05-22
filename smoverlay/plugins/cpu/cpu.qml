@@ -11,7 +11,7 @@ Item {
     height: cpu_average.height + cpu_list.height
 
     Timer  {
-        interval: monitor.updateInterval; running: true; repeat: true;
+        interval: monitor.updateInterval; running: smoverlay.running; repeat: true;
         onTriggered: monitor.update()
     }
 
@@ -79,6 +79,10 @@ Item {
 
                 value: monitor.percent / 100
 
+                Behavior on value {
+                    NumberAnimation { duration: monitor.updateInterval }
+                }
+
                 //background: (usage_bar.value >= 75) ? "orange" : "green"
                 style: ProgressBarStyle {
                     background: Rectangle {
@@ -117,6 +121,9 @@ Item {
                 //minimumValue: 0
                 //maximumValue: 100
                 value: modelData.percent / 100
+                Behavior on value {
+                    NumberAnimation { duration: monitor.updateInterval }
+                }
                 style: ProgressBarStyle {
                     panel : Rectangle {
                         color: "transparent"
@@ -169,10 +176,6 @@ Item {
                 }
             }
         }
-    }
-
-    Component.onCompleted: {
-        console.log(JSON.stringify(monitor, null, 4))
     }
     }
 }

@@ -52,3 +52,10 @@ Plugins
  - Add graph
  - List more demanding process
    - kill | stop button for each one
+
+Trash
+-----
+
+# sudo su -c 'echo ":QML:E::qml::/usr/bin/qmlviewer:" >
+/proc/sys/fs/binfmt_misc/register'
+# ./main.qml

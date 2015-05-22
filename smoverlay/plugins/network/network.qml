@@ -6,7 +6,7 @@ Rectangle {
     anchors.fill: parent
 
     Timer  {
-        interval: monitor.updateInterval; running: true; repeat: true;
+        interval: monitor.updateInterval; running: smoverlay.running; repeat: true;
         onTriggered: monitor.update()
     }
 

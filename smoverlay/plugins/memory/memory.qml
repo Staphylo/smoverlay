@@ -9,7 +9,7 @@ Item {
     property variant color
 
     Timer  {
-        interval: 1000; running: true; repeat: true;
+        interval: monitor.updateInterval; running: smoverlay.running; repeat: true;
         onTriggered: monitor.update()
     }
 
