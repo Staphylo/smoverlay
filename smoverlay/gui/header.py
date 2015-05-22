@@ -39,10 +39,14 @@ class Header(QmlObject):
         self.wifiEssid_ = 0
         self.wifiSignal_ = -1
         self.running_ = True
-        self.ethiface = b"enp2s0f0"
         self.connectionType = Header.NET_WIFI # FIXME
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socketfd = self.socket.fileno()
+        # TODO use configuration for the interfaces by default
+        ethifaces = self.getEthernetIfaces()
+        self.ethiface = ethifaces[0] if ethifaces else None
+        wlifaces = self.getWirelessIfaces()
+        self.wliface = wlifaces[0] if wlifaces else None
         self.update()
 
     def getEssid(self, interface):
@@ -58,23 +62,37 @@ class Header(QmlObject):
             return name
         return None
 
+    def getIfaces(self, prefix):
+        interfaces = []
+        with open("/proc/net/dev", "r") as f:
+            for line in f.readlines()[2:]:
+                data = line.rstrip().split()
+                ifname = data[0][:-1]
+                if ifname.startswith(prefix):
+                    interfaces.append(ifname)
+        return interfaces
+
+    def getEthernetIfaces(self):
+        return self.getIfaces(("en", "et"))
 
     def getLinkInfo(self):
+        iface = bytes(self.ethiface, 'ascii')
+        ecmd = array.array('B', struct.pack('2I', ETHTOOL_GLINK, 0))
+        ifreq = struct.pack('16sP', iface, ecmd.buffer_info()[0])
+        fcntl.ioctl(self.socketfd, SIOCETHTOOL, ifreq)
+        res = ecmd.tostring()
+        up = bool(struct.unpack('4xI', res)[0])
+        if not up:
+            return None, None, None, False
+
         ecmd = array.array('B', struct.pack('I39s', ETHTOOL_GSET, b'\x00'*39))
-        ifreq = struct.pack('16sP', self.ethiface, ecmd.buffer_info()[0])
+        ifreq = struct.pack('16sP', iface, ecmd.buffer_info()[0])
         try:
             fcntl.ioctl(self.socketfd, SIOCETHTOOL, ifreq)
             res = ecmd.tostring()
             speed, duplex, auto = struct.unpack('12xHB3xB24x', res)
         except IOError:
             speed, duplex, auto = 65535, 255, 255
-
-        # Then get link up/down state
-        ecmd = array.array('B', struct.pack('2I', ETHTOOL_GLINK, 0))
-        ifreq = struct.pack('16sP', self.ethiface, ecmd.buffer_info()[0])
-        fcntl.ioctl(self.socketfd, SIOCETHTOOL, ifreq)
-        res = ecmd.tostring()
-        up = bool(struct.unpack('4xI', res)[0])
 
         if speed == 65535:
             speed = 0
@@ -88,37 +106,41 @@ class Header(QmlObject):
             auto = bool(auto)
         return speed, duplex, auto, up
 
+    def getWirelessIfaces(self):
+        return self.getIfaces('wl')
+
+    def getWirelessInfo(self):
+        lines = None
+        with open('/proc/net/wireless') as f:
+            for line in f.readlines()[2:]:
+                data = line.split()
+                ifname = data[0][:-1]
+                if ifname != self.wliface:
+                    continue
+                essid = self.getEssid(ifname)
+                signal = int(float(data[2]))
+                return signal, essid
+
+        return None, None
+
     def autodetect(self):
-        speed, _, _, up = self.getLinkInfo()
-        self.ethernetSpeed = speed
-        if up:
-            self.connectionType = Header.NET_ETHERNET
-        else:
-            self.connectionType = Header.NET_WIFI
+        if self.ethiface:
+            speed, _, _, up = self.getLinkInfo()
+            if up:
+                self.ethernetSpeed = speed
+                return Header.NET_ETHERNET
+
+        if self.wliface:
+            signal, essid = self.getWirelessInfo()
+            if signal:
+                self.wifiSignal = signal
+                self.wifiEssid = essid
+                return Header.NET_WIFI
+
+        return Header.NET_NONE
 
     @pyqtSlot()
     def update(self):
-        # detect connection type
-        #self.connectionType = ( self.connectionType + 1 ) % 3
-        self.autodetect()
-        if self.connectionType & Header.NET_ETHERNET:
-            pass
-        if self.connectionType & Header.NET_WIFI:
-            lines = None
-            with open('/proc/net/wireless') as f:
-                lines = f.readlines()[2:]
-            if not lines:
-                self.wifiEssid = ""
-                self.wifiSignal = -1
-                self.connectionType = Header.NET_NONE
-                return
-            ifaces = {}
-            for line in lines:
-                data = line.split()
-                ifaces[data[0]] = data[1:]
-
-            for iface, data in ifaces.items():
-                self.wifiEssid = self.getEssid(iface)
-                self.wifiSignal = int(float(data[1]))
+        self.connectionType = self.autodetect()
 
 
