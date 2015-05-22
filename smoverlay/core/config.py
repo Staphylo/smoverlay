@@ -73,6 +73,6 @@ def generateConfig():
             "config": config[name]
         }})
     config["plugins"] = plugins
-    print(config)
+    __import__("pprint").pprint(config)
     return config
 

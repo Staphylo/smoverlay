@@ -75,8 +75,10 @@ def runApplication(config):
     context.setContextProperty('smoverlay', header)
     context.setContextProperty('view', view)
 
-    if "gui" not in config:
-        config["gui"] = UIConfig.defaultConfig(desktop)
+    #if "gui" not in config:
+    old = config.setdefault("gui", {})
+    config["gui"] = UIConfig.defaultConfig(desktop)
+    config["gui"].update(old)
 
     ui = UIConfig(config["gui"])
     ui.setGeometry(desktop)
