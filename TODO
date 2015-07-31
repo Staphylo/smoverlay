@@ -1,3 +1,8 @@
+Overall
+-------
+
+ - global performance improvement, especially in gui with setters
+
 Core
 ----
 
@@ -14,9 +19,12 @@ Gui
 
  - Fix the plugin size in QML (actually a hack by having QMonitor.pluginHeight)
 
+ - Fix the exit segfault
  - Show exit button only for debugging (see configuration file)
  - Drag and drop to reorder plugins (saving layout imply rewriting configuration)
- - Disable updating/rendering when hidden (currently a failure for rendering)
+ - Disable updating/rendering when hidden
+    - updating is disabled when overlay is hidden (cost of smoverlay.running?)
+    - failed to freeze the gui so far
  - Signal are class signal and not object signal
  - Smoothing transitions from one value to an other
 
