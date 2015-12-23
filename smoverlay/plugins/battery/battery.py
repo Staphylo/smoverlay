@@ -13,6 +13,8 @@ class BatteryMonitor(Monitor):
         Monitor.__init__(self)
         self.status = "Charging"
         self.percent = 0
+        self.percent_dead = 0
+        self.percent_ori = 0
         self.timeLeft = 0
         self.path = os.path.join(self.battery_path,
                                  self.battery_pattern % self.config["id"])
@@ -48,11 +50,16 @@ class BatteryMonitor(Monitor):
                 (key, value) = line.rstrip().split('=')
                 data[key] = value
 
-        self.percent = round(
-            int(data["POWER_SUPPLY_CHARGE_NOW"]) /
-            int(data["POWER_SUPPLY_CHARGE_FULL_DESIGN"]) * 100
-        , 2);
+        psc_now = int(data["POWER_SUPPLY_CHARGE_NOW"])
+        psc_full = int(data["POWER_SUPPLY_CHARGE_FULL"])
 
+        self.percent = round(psc_now / psc_full * 100, 2)
         self.status = data["POWER_SUPPLY_STATUS"]
+
+        # XXX: add red background to show dead battery levels
+        psc_full_design = int(data["POWER_SUPPLY_CHARGE_FULL_DESIGN"])
+        self.percent_ori = round(psc_now / psc_full_design * 100, 2)
+        self.percent_dead = round((psc_full_design - psc_full) /
+                psc_full_design * 100, 2)
 
 
