@@ -62,7 +62,7 @@ class StorageMonitor(Monitor):
 
     def update(self, elapsed):
         disksio = psutil.disk_io_counters(perdisk=True)
-        partitions = psutil.disk_partitions(all=True) # only mounted: all=True)
+        partitions = psutil.disk_partitions(all=True)
         for mountpoint in self.config["mountpoints"]:
             p = [ x for x in partitions if x.mountpoint == mountpoint ]
             if len(p) == 0:
