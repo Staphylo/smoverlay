@@ -3,7 +3,7 @@
 # https://gist.github.com/mrzechonek/bd7c059b5742a9c1a7fd
 #
 
-from PyQt5.QtCore import QObject, pyqtWrapperType, pyqtProperty, pyqtSignal, \
+from PyQt5.QtCore import QObject, pyqtProperty, pyqtSignal, \
                          pyqtSlot
 
 class qmlProperty:
@@ -15,7 +15,7 @@ class qmlProperty:
         self.property_type = property_type
         self.signal= signal
 
-class qmlWrapperType(pyqtWrapperType):
+class qmlWrapperType(type(QObject)):
     def __new__(meta, name, bases, dct):
         def qml_property(prop_type, prop_name, notify, notify_name):
             """
