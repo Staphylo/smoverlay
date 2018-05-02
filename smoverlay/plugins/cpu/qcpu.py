@@ -23,9 +23,6 @@ class QCPUMonitor(QMonitor):
         self.count_ = 0
         print(self.monitor.config)
 
-    def fieldInitialized(self, name):
-        return hasattr(self, name + '_')
-
     @pyqtSlot()
     def update(self):
         QMonitor.update(self)

@@ -47,6 +47,9 @@ class QMonitor(QmlObject):
     #    default["height"] = 1000
     #    return default
 
+    def fieldInitialized(self, name):
+        return hasattr(self, name + '_')
+
     def types(self):
         return self.qtypes_
 

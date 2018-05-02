@@ -3,77 +3,90 @@ import QtQuick.Controls 1.3
 import QtQuick.Controls.Styles 1.3
 
 Item {
-    property alias color : content.color
+    id: plugin
 
     anchors.fill: parent
+    property variant color
 
     Timer  {
-        interval: monitor.updateInterval; running: monitor.updateEnabled; repeat: true;
+        interval: monitor.updateInterval
+        running: smoverlay.running
+        repeat: true;
         onTriggered: monitor.update()
     }
 
-    Rectangle {
-        id: content
-        //anchors.fill: parent
-        anchors.left: parent.left
-        anchors.right: parent.right
-        height: 40
+    ListView {
+        anchors.fill: parent
 
-        Text {
-            id: battery_text
+        interactive: false
 
-            anchors.top: parent.top
-            anchors.left: parent.left
-            anchors.right: usage_text.left
-            anchors.margins: {
-                top: 5
-                left: 5
-                right: 5
-            }
+        model: monitor.batteries
 
-            verticalAlignment: Text.AlignVCenter
-            color: "white"
+        delegate: Rectangle {
+            id: content
 
-            text: "Battery is " + monitor.status
-        }
-
-        Text {
-            id: usage_text
-
-            anchors.top: parent.top
-            anchors.left: battery_text.right
-            anchors.right: parent.right
-            anchors.margins: {
-                top: 5
-                left: 5
-                right: 5
-            }
-            verticalAlignment: Text.AlignVCenter
-            horizontalAlignment: Text.AlignRight
-
-            text: monitor.percent + "%"
-            color: "white"
-        }
-
-        ProgressBar {
-            id: usage_bar
-
-            anchors.top: battery_text.bottom
-            anchors.bottom: parent.bottom
             anchors.left: parent.left
             anchors.right: parent.right
-            anchors.margins: 4
+            height: 40
 
-            value: monitor.percent / 100
+            color: plugin.color
 
-            style: ProgressBarStyle {
-                background: Rectangle {
-                    radius: 2
-                    color: "#222"
+            Text {
+                id: battery_text
+
+                anchors.top: parent.top
+                anchors.left: parent.left
+                anchors.right: usage_text.left
+                anchors.margins: {
+                    top: 5
+                    left: 5
+                    right: 5
                 }
-                progress: Rectangle {
-                    radius: 2
-                    color: (usage_bar.value < 0.25) ? "orange" : "green"
+
+                verticalAlignment: Text.AlignVCenter
+                color: "white"
+
+                text: "Battery " + modelData.label + " is " + modelData.status
+            }
+
+            Text {
+                id: usage_text
+
+                anchors.top: parent.top
+                anchors.left: battery_text.right
+                anchors.right: parent.right
+                anchors.margins: {
+                    top: 5
+                    left: 5
+                    right: 5
+                }
+                verticalAlignment: Text.AlignVCenter
+                horizontalAlignment: Text.AlignRight
+
+                text: modelData.percent + "%"
+                color: "white"
+            }
+
+            ProgressBar {
+                id: usage_bar
+
+                anchors.top: battery_text.bottom
+                anchors.bottom: parent.bottom
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.margins: 4
+
+                value: modelData.percent / 100
+
+                style: ProgressBarStyle {
+                    background: Rectangle {
+                        radius: 2
+                        color: "#222"
+                    }
+                    progress: Rectangle {
+                        radius: 2
+                        color: (usage_bar.value < 0.25) ? "orange" : "green"
+                    }
                 }
             }
         }
