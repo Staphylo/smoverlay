@@ -119,6 +119,7 @@ class Header(QmlObject):
                     continue
                 essid = self.getEssid(ifname)
                 signal = int(float(data[2]))
+                signal = signal * 100 / 70
                 return signal, essid
 
         return None, None
