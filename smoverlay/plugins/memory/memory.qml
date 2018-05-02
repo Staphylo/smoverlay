@@ -9,7 +9,9 @@ Item {
     property variant color
 
     Timer  {
-        interval: monitor.updateInterval; running: smoverlay.running; repeat: true;
+        interval: monitor.updateInterval
+        running: smoverlay.running
+        repeat: true;
         onTriggered: monitor.update()
     }
 
@@ -18,15 +20,7 @@ Item {
 
         interactive: false
 
-        model: ListModel {
-            Component.onCompleted: {
-                append(monitor.memory)
-                if (monitor.hasSwap) {
-                    var swap = monitor.swap
-                    append(monitor.swap)
-                }
-            }
-        }
+        model: monitor.memories
 
         delegate: Rectangle {
 
@@ -51,7 +45,7 @@ Item {
                 verticalAlignment: Text.AlignVCenter
                 color: "white"
 
-                text: model.label
+                text: modelData.label
             }
 
             Text {
@@ -68,7 +62,7 @@ Item {
                 verticalAlignment: Text.AlignVCenter
                 horizontalAlignment: Text.AlignRight
 
-                text: model.percent + "%"
+                text: modelData.percent + "%"
                 color: "white"
             }
 
@@ -81,7 +75,7 @@ Item {
                 anchors.right: parent.right
                 anchors.margins: 4
 
-                value: model.percent / 100
+                value: modelData.percent / 100
 
                 //background: (usage_bar.value >= 75) ? "orange" : "green"
                 style: ProgressBarStyle {
