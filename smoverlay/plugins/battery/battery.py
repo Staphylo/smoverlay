@@ -72,6 +72,7 @@ class BatteryMonitor(Monitor):
             m = re.match(r"BAT(\d+)", entry)
             if m:
                 batteries.append(int(m.group(1)))
+        batteries.sort()
 
         cfg = Monitor.defaultConfig(self)
         cfg.update({
