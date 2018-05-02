@@ -49,7 +49,7 @@ def information():
         print(" - %s (%s)" % (name, cls))
 
 def main():
-    args = docopt(docstring, version=smoverlay.core.config.version)
+    args = docopt(docstring, version="devel")
 
     dumpconfig = False
     print(args)
