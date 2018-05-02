@@ -6,6 +6,7 @@ from .battery import BatteryMonitor
 
 class QBattery(QmlObject):
     percent = qmlProperty(float)
+    dead = qmlProperty(float)
     label = qmlProperty('QString')
     status = qmlProperty('QString')
 
@@ -14,8 +15,9 @@ class QBattery(QmlObject):
         self.label = str(label)
         self.update(*args)
 
-    def update(self, percent, status):
+    def update(self, percent, dead, status):
         self.percent = percent
+        self.dead = dead
         self.status = status
 
 class QBatteryMonitor(QMonitor):
@@ -32,10 +34,10 @@ class QBatteryMonitor(QMonitor):
         QMonitor.update(self)
         batteries = self.monitor.batteries
         if not self.fieldInitialized('batteries'):
-            self.batteries = [QBattery(bat.uid, bat.percent, bat.status)
-                              for bat in batteries]
+            self.batteries = [QBattery(bat.uid, bat.percent, bat.percent_dead,
+                                       bat.status) for bat in batteries]
         else:
             for battery, bat in zip(self.batteries, batteries):
-                battery.update(bat.percent, bat.status)
+                battery.update(bat.percent, bat.percent_dead, bat.status)
         self.monitorHeight_ = 40 * len(self.batteries)
 

@@ -44,7 +44,6 @@ Plugins
 
 ### Battery
  - Add estimated time left between charged/discharged
- - Show battery death (FULL_DESIGN - FULL) with another color
  - Show usage Graph
     - Could also corrolate cpu most using process to battery usage as a
       percentage

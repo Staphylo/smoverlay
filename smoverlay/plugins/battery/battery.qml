@@ -76,7 +76,8 @@ Item {
                 anchors.right: parent.right
                 anchors.margins: 4
 
-                value: modelData.percent / 100
+                value: (modelData.dead / 100) +
+                       (modelData.percent / 100) * ((100 - modelData.dead) / 100)
 
                 style: ProgressBarStyle {
                     background: Rectangle {
@@ -85,7 +86,27 @@ Item {
                     }
                     progress: Rectangle {
                         radius: 2
-                        color: (usage_bar.value < 0.25) ? "orange" : "green"
+                        color: (modelData.percent < 30) ?
+                                  ((modelData.percent < 10) ? "red" : "orange")
+                                  : "green"
+                    }
+                }
+            }
+
+            ProgressBar {
+                id: death_bar
+
+                anchors.fill: usage_bar
+
+                value: modelData.dead / 100
+
+                style: ProgressBarStyle {
+                    background: Rectangle {
+                        color: "transparent"
+                    }
+                    progress: Rectangle {
+                        radius: 2
+                        color: "grey"
                     }
                 }
             }
