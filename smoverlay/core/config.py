@@ -67,10 +67,9 @@ def generateConfig():
             # supported
             # XXX raise UnsupportedMonitor
             continue
-        config[name] = moncfg
         plugins.append({ name: {
             "plugin": name,
-            "config": config[name]
+            "config": moncfg,
         }})
     config["plugins"] = plugins
     __import__("pprint").pprint(config)

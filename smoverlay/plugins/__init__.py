@@ -22,7 +22,7 @@ monitors = {}
 qmonitors = {}
 for plugin in plugins:
     for subdir, dirs, files in os.walk(os.path.join(pluginspath, plugin)):
-        #print("Loading plugin %s" % plugin)
+        print("Loading plugin %s" % plugin)
         parent = import_module("smoverlay.plugins." + plugin)
         for f in files:
             if f.startswith('__') or not f.endswith('.py'):
