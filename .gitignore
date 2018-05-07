@@ -1,6 +1,7 @@
 # basic
 __pycache__/
 *.pyc
+*.qmlc
 *.egg-info/
 /build/
 /dist/
