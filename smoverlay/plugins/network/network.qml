@@ -2,16 +2,26 @@ import QtQuick 2.4
 import QtQuick.Controls 1.3
 import QtQuick.Controls.Styles 1.3
 
+import "../../gui/qml"
+
 Rectangle {
     anchors.fill: parent
 
     Timer  {
         interval: monitor.updateInterval; running: smoverlay.running; repeat: true;
-        onTriggered: monitor.update()
+        onTriggered: {
+            monitor.update()
+            graph.refresh()
+        }
     }
 
     ScrollView {
-        anchors.fill: parent
+        id: interfaces
+
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.top: parent.top
+        anchors.bottom: graph.top
 
         verticalScrollBarPolicy: Qt.ScrollBarAlwaysOff
         ListView {
@@ -121,4 +131,35 @@ Rectangle {
         }
     }
 
+    RCGraph {
+        id: graph
+
+        anchors.top: interfaces.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+
+        Component.onCompleted: refresh()
+
+        function refresh() {
+            graphData = {
+                length: monitor.datapoints,
+                maximum: monitor.maxspeed,
+                datasets: [{
+                    fillColor: "#502bae6c",
+                    strokeColor: "#39ce83",
+                    strokeWidth: 2,
+                    data: monitor.rxspeed
+                }, {
+                    fillColor: "#502387d9",
+                    strokeColor: "#349cf4",
+                    strokeWidth: 2,
+                    data: monitor.txspeed
+                }]
+            }
+            requestPaint()
+        }
+
+        height: 50
+    }
 }

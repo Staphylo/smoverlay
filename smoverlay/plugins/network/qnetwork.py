@@ -23,14 +23,27 @@ class QInterface(QmlObject):
 class QNetworkMonitor(QMonitor):
     interfaces = qmlProperty(QVariant)
 
+    datapoints = qmlProperty(int)
+    maxspeed = qmlProperty(float)
+    # XXX QQmlListProperty ?
+    rxspeed = qmlProperty(QVariant)
+    txspeed = qmlProperty(QVariant)
+
     def __init__(self):
         QMonitor.__init__(self, NetworkMonitor(), "Network", "network.qml")
         self.monitorHeight_ = 0
+
+        self.datapoints_ = 20
+        self.maxspeed_ = 0
+        self.rxspeed_ = [0] * self.datapoints_
+        self.txspeed_ = [0] * self.datapoints_
         self.qtypes_ += [QInterface]
 
     @pyqtSlot()
     def update(self):
         QMonitor.update(self)
+        rx = 0
+        tx = 0
         if not hasattr(self, 'interfaces_'):
             self.interfaces_ = [ QInterface(name, info)
                     for name, info in self.monitor.interfaces.items() ]
@@ -43,7 +56,12 @@ class QNetworkMonitor(QMonitor):
                 else:
                     data = data[0]
                     data.update(iface, info)
-        self.monitorHeight = len(self.monitor.interfaces) * 32
+                rx += info["rxspeed"]
+                tx += info["txspeed"]
+        self.rxspeed[:] = self.rxspeed[1:] + [rx]
+        self.txspeed[:] = self.txspeed[1:] + [tx]
+        self.maxspeed = max(max(self.rxspeed), max(self.txspeed))
+        self.monitorHeight = len(self.monitor.interfaces) * 32 + 50
 
 
 
